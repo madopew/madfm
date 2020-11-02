@@ -1,0 +1,25 @@
+#ifndef MADFM_KEYPRESSHANDLER_H
+#define MADFM_KEYPRESSHANDLER_H
+
+#include "ConsoleGuiHandler.h"
+
+const int THRESHOLD = 75000;
+const int THRESHOLD_DRAWBACK = (THRESHOLD / 10);
+const int HIGHEST_BIT = 0x8000;
+
+class KeypressHandler {
+private:
+    ConsoleGuiHandler cgh;
+    int counter;
+    bool down_pressed;
+    bool up_pressed;
+    bool right_pressed;
+    bool left_pressed;
+    bool r_pressed;
+    inline void callOnce(bool&, const short, void(ConsoleGuiHandler::*)(void));
+    inline void fastForward(bool&, const short, void(ConsoleGuiHandler::*)(void));
+public:
+    KeypressHandler(ConsoleGuiHandler&);
+    int start(void);
+};
+#endif //MADFM_KEYPRESSHANDLER_H
