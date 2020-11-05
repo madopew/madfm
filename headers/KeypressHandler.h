@@ -16,7 +16,7 @@ private:
     bool right_pressed;
     bool left_pressed;
     bool r_pressed;
-    inline void callOnce(bool&, const short, void(ConsoleGuiHandler::*)(void));
+    inline bool callOnce(bool&, const short, void(ConsoleGuiHandler::*)(void));
     inline void fastForward(bool&, const short, void(ConsoleGuiHandler::*)(void));
 public:
     KeypressHandler(ConsoleGuiHandler&);
