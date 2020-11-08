@@ -1,6 +1,6 @@
 #include "../headers/ConsoleGuiUtils.h"
-
 #include <utility>
+#include <conio.h>
 
 ConsoleGuiUtils::ConsoleGuiUtils(HANDLE h_console) : h_console(h_console) {}
 
@@ -42,4 +42,44 @@ void ConsoleGuiUtils::outputLine(ConsoleLine line) {
 
 void ConsoleGuiUtils::outputLine(const std::string& str, WORD attr) {
     outputLine(ConsoleLine(str, attr));
+}
+
+void ConsoleGuiUtils::outputChar(const char c, WORD attr) {
+    CONSOLE_SCREEN_BUFFER_INFO s;
+    GetConsoleScreenBufferInfo(h_console, &s);
+    COORD current_cursor_coord = s.dwCursorPosition;
+    DWORD written;
+    WriteConsoleA(h_console, &c, 1, &written, nullptr);
+    FillConsoleOutputAttribute(h_console, attr, 1, current_cursor_coord, &written);
+}
+
+std::string ConsoleGuiUtils::inputLine(WORD attr) {
+    _getch();
+    while(_kbhit()) _getch();
+    char buff[INPUT_MAX_LENGTH] = {0};
+    int index = 0;
+    int c;
+iloop:
+    c = _getch();
+    switch(c) {
+        case 27: //esc
+            return "";
+        case '\n':
+        case '\r':
+            return buff;
+        case '\b':
+            outputChar(c, attr);
+            outputChar(' ', attr);
+            outputChar(c, attr);
+            index -= index != 0;
+            buff[index] = 0;
+            goto iloop;
+        default:
+            if(index < INPUT_MAX_LENGTH) {
+                outputChar(c, attr);
+                buff[index] = c;
+                index++;
+            }
+            goto iloop;
+    }
 }

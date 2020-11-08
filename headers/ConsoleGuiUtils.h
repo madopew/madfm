@@ -6,6 +6,8 @@
 #ifndef MADFM_CONSOLEGUIUTILS_H
 #define MADFM_CONSOLEGUIUTILS_H
 
+#define INPUT_MAX_LENGTH 64
+
 class ConsoleGuiUtils {
 private:
     HANDLE h_console;
@@ -16,5 +18,7 @@ public:
     void clearLine(COORD);
     void outputLine(ConsoleLine);
     void outputLine(const std::string &, WORD);
+    void outputChar(const char, WORD);
+    std::string inputLine(WORD);
 };
 #endif //MADFM_CONSOLEGUIUTILS_H
