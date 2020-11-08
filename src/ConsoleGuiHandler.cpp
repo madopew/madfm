@@ -1,7 +1,6 @@
 #include "../headers/ConsoleGuiHandler.h"
 #include <iostream>
 #include <utility>
-#include <conio.h>
 
 ConsoleGuiHandler::ConsoleGuiHandler(HANDLE h_console) : utils(h_console), h_console(h_console), fd(".") {
     saveAttributes();
@@ -169,7 +168,7 @@ void ConsoleGuiHandler::open() {
             break;
         case FileType::EXE:
         case FileType::ORD:
-            std::string command = "start " + file_name;
+            std::string command = R"(start "" ")" + file_name + "\"";
             system(command.c_str());
             break;
     }
@@ -202,5 +201,20 @@ void ConsoleGuiHandler::goUp() {
 }
 
 void ConsoleGuiHandler::rename() {
-    while(_kbhit()) _getch();
+    utils.outputLine("Input name:", saved_attributes);
+    std::string new_name = utils.inputLine(saved_attributes);
+    if(!new_name.empty()) {
+        if(Filedirectory::containsCurrent(new_name)) {
+            redrawConsoleGui();
+            utils.outputLine("File or directory with such name already exists!", saved_attributes);
+        } else {
+            FiledirectoryException ex = Filedirectory::changeName(list_files[current_selected_index].getName(), new_name);
+            if(ex == FiledirectoryException::NO_EXCEPTION) {
+                reInit(".");
+            } else {
+                redrawConsoleGui();
+                utils.outputLine("File or directory cannot be named that way!", saved_attributes);
+            }
+        }
+    }
 }
