@@ -10,7 +10,7 @@ KeypressHandler::KeypressHandler(ConsoleGuiHandler &cgh) : cgh(cgh) {
 }
 
 inline bool KeypressHandler::callOnce(bool &exp, const short KEY, void (ConsoleGuiHandler:: *func_call)()) {
-    bool is_pressed = GetAsyncKeyState(KEY) & HIGHEST_BIT;
+    bool is_pressed = GetAsyncKeyState(KEY) < 0;
     if (!exp && !is_pressed)
         return false;
 
@@ -27,7 +27,7 @@ inline bool KeypressHandler::callOnce(bool &exp, const short KEY, void (ConsoleG
 }
 
 inline void KeypressHandler::fastForward(bool &exp, const short KEY, void (ConsoleGuiHandler:: *func_call)()) {
-    bool is_pressed = GetAsyncKeyState(KEY) & HIGHEST_BIT;
+    bool is_pressed = GetAsyncKeyState(KEY) < 0;
     if (!exp && !is_pressed)
         return;
 
@@ -55,13 +55,13 @@ int KeypressHandler::start() {
     HWND w_console = GetConsoleWindow();
     while(true) {
         if (GetForegroundWindow() == w_console) {
-            if (GetAsyncKeyState(VK_ESCAPE) & HIGHEST_BIT)
+            if (GetAsyncKeyState('Q') < 0)
                 return 0;
 
             fastForward(down_pressed, VK_DOWN, &ConsoleGuiHandler::moveDown);
             fastForward(up_pressed, VK_UP, &ConsoleGuiHandler::moveUp);
 
-            callOnce(right_pressed, VK_RETURN, &ConsoleGuiHandler::open);
+            callOnce(right_pressed, VK_RIGHT, &ConsoleGuiHandler::open);
             callOnce(left_pressed, VK_LEFT, &ConsoleGuiHandler::goUp);
 
             callOnce(r_pressed, 'R', &ConsoleGuiHandler::rename);

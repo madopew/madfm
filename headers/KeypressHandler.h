@@ -5,7 +5,6 @@
 
 const int THRESHOLD = 75000;
 const int THRESHOLD_DRAWBACK = (THRESHOLD / 10);
-const int HIGHEST_BIT = 0x8000;
 
 class KeypressHandler {
 private:
