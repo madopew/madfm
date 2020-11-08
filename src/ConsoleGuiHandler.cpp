@@ -4,6 +4,7 @@
 
 ConsoleGuiHandler::ConsoleGuiHandler(HANDLE h_console) : utils(h_console), h_console(h_console), fd(".") {
     saveAttributes();
+    SetConsoleCP(RUSSIAN_CP);
     SetConsoleOutputCP(RUSSIAN_CP);
     utils.clearScreen();
     reserveLines();
@@ -209,12 +210,21 @@ void ConsoleGuiHandler::rename() {
             utils.outputLine("File or directory with such name already exists!", saved_attributes);
         } else {
             FiledirectoryException ex = Filedirectory::changeName(list_files[current_selected_index].getName(), new_name);
-            if(ex == FiledirectoryException::NO_EXCEPTION) {
-                reInit(".");
-            } else {
-                redrawConsoleGui();
-                utils.outputLine("File or directory cannot be named that way!", saved_attributes);
+            switch(ex) {
+                case FiledirectoryException::NO_EXCEPTION:
+                    reInit(".");
+                    break;
+                case FiledirectoryException::INCORRECT_NAME:
+                    redrawConsoleGui();
+                    utils.outputLine("Preserved name!", saved_attributes);
+                    break;
+                case FiledirectoryException::ACCESS_DENIED:
+                    redrawConsoleGui();
+                    utils.outputLine("Access is denied!", saved_attributes);
+                    break;
             }
         }
+    } else {
+        redrawConsoleGui();
     }
 }
