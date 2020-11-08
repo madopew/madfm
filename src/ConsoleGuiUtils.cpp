@@ -1,5 +1,4 @@
 #include "../headers/ConsoleGuiUtils.h"
-#include <utility>
 #include <conio.h>
 
 ConsoleGuiUtils::ConsoleGuiUtils(HANDLE h_console) : h_console(h_console) {}
@@ -49,7 +48,7 @@ void ConsoleGuiUtils::outputChar(const char c, WORD attr) {
     GetConsoleScreenBufferInfo(h_console, &s);
     COORD current_cursor_coord = s.dwCursorPosition;
     DWORD written;
-    WriteConsoleA(h_console, &c, 1, &written, nullptr);
+    WriteConsole(h_console, &c, 1, &written, nullptr);
     FillConsoleOutputAttribute(h_console, attr, 1, current_cursor_coord, &written);
 }
 
