@@ -56,7 +56,12 @@ FiledirectoryException Filedirectory::changeName(const std::string& old_name, co
         auto new_p = fs::current_path() / new_name;
         fs::rename(old_p, new_p);
     } catch (const fs::filesystem_error& e) {
-        return FiledirectoryException::INCORRECT_NAME;
+        switch(e.code().value()) {
+            case 5:
+                return FiledirectoryException::ACCESS_DENIED;
+            default:
+                return FiledirectoryException::INCORRECT_NAME;
+        }
     }
     return FiledirectoryException::NO_EXCEPTION;
 }
