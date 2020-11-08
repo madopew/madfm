@@ -49,3 +49,18 @@ std::vector<File> Filedirectory::getFilesList() {
 std::string Filedirectory::getCurrentDirectory() {
     return fs::current_path().generic_string();
 }
+
+FiledirectoryException Filedirectory::changeName(const std::string& old_name, const std::string& new_name) {
+    try {
+        auto old_p = fs::current_path() / old_name;
+        auto new_p = fs::current_path() / new_name;
+        fs::rename(old_p, new_p);
+    } catch (const fs::filesystem_error& e) {
+        return FiledirectoryException::INCORRECT_NAME;
+    }
+    return FiledirectoryException::NO_EXCEPTION;
+}
+
+bool Filedirectory::containsCurrent(const std::string &path) {
+    return fs::exists(fs::current_path() / path);
+}
