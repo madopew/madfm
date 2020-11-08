@@ -132,29 +132,31 @@ void ConsoleGuiHandler::reduceCurrentLines() {
 }
 
 void ConsoleGuiHandler::moveDown() {
-    int absolute_index = current_selected_index + 1 - starting_index;
-    if (absolute_index < MAX_FILES && current_selected_index < list_files.size() - 1) {
+    int relative_index = current_selected_index + 1 - starting_index;
+    if (relative_index < MAX_FILES && current_selected_index < list_files.size() - 1) {
         current_selected_index++;
-    } else if (absolute_index == MAX_FILES && current_selected_index < list_files.size() - 1) {
+    } else if (relative_index == MAX_FILES && current_selected_index < list_files.size() - 1) {
         current_selected_index++;
         starting_index += MAX_FILES;
-    } else if (absolute_index == MAX_FILES && current_selected_index == list_files.size() - 1) {
-        return;
+    } else if (current_selected_index == list_files.size() - 1) {
+        starting_index = 0;
+        current_selected_index = 0;
     }
     redrawConsoleGui();
 }
 
 void ConsoleGuiHandler::moveUp() {
-    int absolute_index = current_selected_index + 1 - starting_index;
-    if (absolute_index > 1) {
+    int relative_index = current_selected_index + 1 - starting_index;
+    if (relative_index > 1) {
         current_selected_index--;
     }
-    else if (absolute_index == 1 && starting_index > 0) {
+    else if (relative_index == 1 && starting_index > 0) {
         current_selected_index--;
         starting_index -= MAX_FILES;
     }
-    else if (absolute_index == 1 && starting_index == 0) {
-        return;
+    else if (relative_index == 1 && starting_index == 0) {
+        current_selected_index = list_files.size() - 1;
+        starting_index = current_selected_index / MAX_FILES * MAX_FILES;
     }
     redrawConsoleGui();
 }
