@@ -63,6 +63,10 @@ iloop:
     switch(c) {
         case 27: //esc
             return "";
+        case 0: //extended
+            _getch();
+            printf(" %s ", "extended");
+            goto iloop;
         case '\n':
         case '\r':
             return buff;
