@@ -8,6 +8,7 @@ KeypressHandler::KeypressHandler(ConsoleGuiHandler &cgh) : cgh(cgh) {
     left_pressed = false;
     r_pressed = false;
     o_pressed = false;
+    n_pressed = false;
 }
 
 inline bool KeypressHandler::callOnce(bool &exp, const short KEY, void (ConsoleGuiHandler:: *func_call)()) {
@@ -67,6 +68,7 @@ int KeypressHandler::start() {
 
             callOnce(o_pressed, 'O', &ConsoleGuiHandler::open);
             callOnce(r_pressed, 'R', &ConsoleGuiHandler::rename);
+            callOnce(n_pressed, 'N', &ConsoleGuiHandler::createFileOrDir);
         }
     }
 }
