@@ -19,5 +19,7 @@ public:
     static std::string getCurrentDirectory(void);
     static FiledirectoryException changeName(const std::string&, const std::string&);
     static bool containsCurrent(const std::string&);
+    static FiledirectoryException createDir(const std::string&);
+    static FiledirectoryException createFile(const std::string&);
 };
 #endif //MADFM_FILEDIRECTORY_H

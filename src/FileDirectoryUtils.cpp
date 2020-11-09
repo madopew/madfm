@@ -2,9 +2,9 @@
 // Created by Madi on 05.11.2020.
 //
 
-#include "../headers/FileUtils.h"
+#include "../headers/FileDirectoryUtils.h"
 
-std::string FileUtils::parseName(std::string name) {
+std::string FileDirectoryUtils::parseName(std::string name) {
     if (name.length() <= MAX_CHARS)
         return name;
 
@@ -13,7 +13,7 @@ std::string FileUtils::parseName(std::string name) {
     return name;
 }
 
-std::string FileUtils::parseTime(std::filesystem::file_time_type ftime) {
+std::string FileDirectoryUtils::parseTime(std::filesystem::file_time_type ftime) {
     using namespace std::chrono;
     using namespace std::filesystem;
 
@@ -29,7 +29,7 @@ std::string FileUtils::parseTime(std::filesystem::file_time_type ftime) {
     return buff;
 }
 
-std::string FileUtils::parseSize(uintmax_t size, bool is_dir) {
+std::string FileDirectoryUtils::parseSize(uintmax_t size, bool is_dir) {
     char directory_size[SIZE_LENGTH + 1] = {0};
     if (is_dir) {
         sprintf_s(directory_size, SIZE_LENGTH + 1, "%*s", SIZE_LENGTH, "/");
@@ -46,7 +46,7 @@ std::string FileUtils::parseSize(uintmax_t size, bool is_dir) {
     return std::string(directory_size);
 }
 
-FileType FileUtils::defineType(const std::filesystem::directory_entry &entry) {
+FileType FileDirectoryUtils::defineType(const std::filesystem::directory_entry &entry) {
     if(entry.is_directory())
         return FileType::DIR;
     if(isFileExe(entry.path().filename().string()))
@@ -54,12 +54,25 @@ FileType FileUtils::defineType(const std::filesystem::directory_entry &entry) {
     return FileType::ORD;
 }
 
-bool FileUtils::isFileExe(const std::string &name) {
+bool FileDirectoryUtils::isFileExe(const std::string &name) {
     std::string ext = defineExtension(name);
     return ext == "exe" || ext == "lnk";
 }
 
-std::string FileUtils::defineExtension(const std::string &name) {
+std::string FileDirectoryUtils::defineExtension(const std::string &name) {
     return name.substr(name.find_last_of('.') + 1);
+}
+
+FiledirectoryException FileDirectoryUtils::handleExceptionCode(int code) {
+    switch (code) {
+        case 5:
+            return FiledirectoryException::ACCESS_DENIED;
+        case 3:
+            return FiledirectoryException::FILE_NOT_FOUND;
+        case 183:
+            return FiledirectoryException::INCORRECT_NAME;
+        default:
+            return FiledirectoryException::UNHANDLED;
+    }
 }
 

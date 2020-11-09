@@ -1,6 +1,8 @@
 #include "../headers/Filedirectory.h"
+#include "../headers/FileDirectoryUtils.h"
 #include <string>
 #include <filesystem>
+#include <fstream>
 
 namespace fs = std::filesystem;
 
@@ -11,16 +13,8 @@ Filedirectory::Filedirectory(const std::string &path) {
 FiledirectoryException Filedirectory::reInit(const std::string &path) {
     try {
         const auto& entry = fs::directory_iterator(path);
-    } catch (const std::system_error& ex) {
-        int error_code = ex.code().value();
-        switch(error_code) {
-            case 5:
-                return FiledirectoryException::ACCESS_DENIED;
-            case 3:
-                return FiledirectoryException::FILE_NOT_FOUND;
-            default:
-                return FiledirectoryException::UNHANDLED;
-        }
+    } catch (const std::system_error& e) {
+        return FileDirectoryUtils::handleExceptionCode(e.code().value());
     }
     fillList(path);
     return FiledirectoryException::NO_EXCEPTION;
@@ -51,17 +45,31 @@ std::string Filedirectory::getCurrentDirectory() {
 }
 
 FiledirectoryException Filedirectory::changeName(const std::string& old_name, const std::string& new_name) {
+    auto old_p = fs::current_path() / old_name;
+    auto new_p = fs::current_path() / new_name;
     try {
-        auto old_p = fs::current_path() / old_name;
-        auto new_p = fs::current_path() / new_name;
         fs::rename(old_p, new_p);
     } catch (const fs::filesystem_error& e) {
-        switch(e.code().value()) {
-            case 5:
-                return FiledirectoryException::ACCESS_DENIED;
-            default:
-                return FiledirectoryException::INCORRECT_NAME;
-        }
+        return FileDirectoryUtils::handleExceptionCode(e.code().value());
+    }
+    return FiledirectoryException::NO_EXCEPTION;
+}
+
+FiledirectoryException Filedirectory::createDir(const std::string &name) {
+    auto path = fs::current_path() / name;
+    try {
+        fs::create_directory(path);
+    } catch(const fs::filesystem_error& e) {
+        return FileDirectoryUtils::handleExceptionCode(e.code().value());
+    }
+    return FiledirectoryException::NO_EXCEPTION;
+}
+
+FiledirectoryException Filedirectory::createFile(const std::string &name) {
+    auto path = fs::current_path() / name;
+    std::ofstream file(path.string());
+    if(file.bad()) {
+        return FiledirectoryException::UNHANDLED;
     }
     return FiledirectoryException::NO_EXCEPTION;
 }
