@@ -47,6 +47,7 @@ public:
     void moveDown(void);
     void moveUp(void);
     void open(void);
+    void openDir(void);
     void goUp(void);
     void rename(void);
 };

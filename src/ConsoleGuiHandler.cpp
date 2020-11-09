@@ -175,6 +175,12 @@ void ConsoleGuiHandler::open() {
     }
 }
 
+void ConsoleGuiHandler::openDir() {
+    std::string file_name = list_files[current_selected_index].getName();
+    if(list_files[current_selected_index].getType() == FileType::DIR)
+        reInit(file_name);
+}
+
 void ConsoleGuiHandler::reInit(std::string file_name) {
     file_name = Filedirectory::getCurrentDirectory() + "/" + file_name;
     FiledirectoryException ex = fd.reInit(file_name);

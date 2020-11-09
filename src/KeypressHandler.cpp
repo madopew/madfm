@@ -7,6 +7,7 @@ KeypressHandler::KeypressHandler(ConsoleGuiHandler &cgh) : cgh(cgh) {
     right_pressed = false;
     left_pressed = false;
     r_pressed = false;
+    o_pressed = false;
 }
 
 inline bool KeypressHandler::callOnce(bool &exp, const short KEY, void (ConsoleGuiHandler:: *func_call)()) {
@@ -61,9 +62,10 @@ int KeypressHandler::start() {
             fastForward(down_pressed, VK_DOWN, &ConsoleGuiHandler::moveDown);
             fastForward(up_pressed, VK_UP, &ConsoleGuiHandler::moveUp);
 
-            callOnce(right_pressed, VK_RIGHT, &ConsoleGuiHandler::open);
+            callOnce(right_pressed, VK_RIGHT, &ConsoleGuiHandler::openDir);
             callOnce(left_pressed, VK_LEFT, &ConsoleGuiHandler::goUp);
 
+            callOnce(o_pressed, 'O', &ConsoleGuiHandler::open);
             callOnce(r_pressed, 'R', &ConsoleGuiHandler::rename);
         }
     }

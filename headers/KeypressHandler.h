@@ -15,6 +15,7 @@ private:
     bool right_pressed;
     bool left_pressed;
     bool r_pressed;
+    bool o_pressed;
     inline bool callOnce(bool&, const short, void(ConsoleGuiHandler::*)(void));
     inline void fastForward(bool&, const short, void(ConsoleGuiHandler::*)(void));
 public:
