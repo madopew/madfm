@@ -11,4 +11,4 @@ add_executable(madfm
         src/ConsoleGuiHandler.cpp
         src/Filedirectory.cpp
         src/KeypressHandler.cpp
-        headers/File.h src/File.cpp headers/FileUtils.h src/FileUtils.cpp headers/ConsoleLine.h src/ConsoleLine.cpp headers/ConsoleGuiUtils.h src/ConsoleGuiUtils.cpp)
+        headers/File.h src/File.cpp headers/FileDirectoryUtils.h src/FileDirectoryUtils.cpp headers/ConsoleLine.h src/ConsoleLine.cpp headers/ConsoleGuiUtils.h src/ConsoleGuiUtils.cpp)

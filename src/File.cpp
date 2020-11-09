@@ -1,12 +1,12 @@
 #include "../headers/File.h"
-#include "../headers/FileUtils.h"
+#include "../headers/FileDirectoryUtils.h"
 
 File::File(const std::filesystem::directory_entry &entry) {
     name_orig = entry.path().filename().string();
-    name_parsed = FileUtils::parseName(name_orig);
-    type = FileUtils::defineType(entry);
-    size = FileUtils::parseSize(entry.file_size(), type == FileType::DIR);
-    time = FileUtils::parseTime(entry.last_write_time());
+    name_parsed = FileDirectoryUtils::parseName(name_orig);
+    type = FileDirectoryUtils::defineType(entry);
+    size = FileDirectoryUtils::parseSize(entry.file_size(), type == FileType::DIR);
+    time = FileDirectoryUtils::parseTime(entry.last_write_time());
 }
 
 std::string File::getName() {
