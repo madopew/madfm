@@ -19,6 +19,12 @@ private:
     const int MAX_FILES = 15;
     const int MAX_ADDITIONAL_LINES = 5;
     const UINT RUSSIAN_CP = 1251;
+    inline static const std::string FD_EXISTS = "File or directory with such name already exists!";
+    inline static const std::string SUCCESS_RENAME = "File or directory successfully renamed.";
+    inline static const std::string SUCCESS_CREATE_DIR = "Directory successfully created.";
+    inline static const std::string SUCCESS_CREATE_FILE = "File successfully created.";
+    inline static const std::string FD_QUESTION = "Is it a (f)ile or a (d)irectory?";
+    inline static const std::string NAME_QUESTION = "Input name:";
 
     ConsoleGuiUtils utils;
     std::vector <ConsoleLine> current_lines;
@@ -40,6 +46,11 @@ private:
     void appendFileInfo(ConsoleLine&, int);
     void saveAttributes(void);
     void reserveLines(void);
+    void rename(const std::string&, const std::string&);
+    void createFile(const std::string&);
+    void createDir(const std::string&);
+    void outputCorrespondingException(FiledirectoryException);
+    bool checkFile(const std::string&);
 public:
     ConsoleGuiHandler(HANDLE);
     ~ConsoleGuiHandler(void);
@@ -48,6 +59,7 @@ public:
     void moveUp(void);
     void open(void);
     void openDir(void);
+    void createFileOrDir(void);
     void goUp(void);
     void rename(void);
 };

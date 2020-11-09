@@ -1,6 +1,7 @@
 #include "../headers/ConsoleGuiHandler.h"
 #include <iostream>
 #include <utility>
+#include <conio.h>
 
 ConsoleGuiHandler::ConsoleGuiHandler(HANDLE h_console) : utils(h_console), h_console(h_console), fd(".") {
     saveAttributes();
@@ -181,21 +182,17 @@ void ConsoleGuiHandler::openDir() {
         reInit(file_name);
 }
 
-void ConsoleGuiHandler::reInit(std::string file_name) {
-    file_name = Filedirectory::getCurrentDirectory() + "/" + file_name;
-    FiledirectoryException ex = fd.reInit(file_name);
-    switch(ex) {
-        case FiledirectoryException::NO_EXCEPTION:
-            list_files = fd.getFilesList();
-            current_selected_index = 0;
-            starting_index = 0;
-            redrawConsoleGui();
-            break;
+void ConsoleGuiHandler::outputCorrespondingException(FiledirectoryException e) {
+    redrawConsoleGui();
+    switch(e) {
         case FiledirectoryException::ACCESS_DENIED:
             utils.outputLine("Access is denied!", saved_attributes);
             break;
         case FiledirectoryException::FILE_NOT_FOUND:
             utils.outputLine("File not found!", saved_attributes);
+            break;
+        case FiledirectoryException::INCORRECT_NAME:
+            utils.outputLine("Preserved name!", saved_attributes);
             break;
         case FiledirectoryException::UNHANDLED:
             utils.outputLine("An error has occurred!", saved_attributes);
@@ -203,34 +200,91 @@ void ConsoleGuiHandler::reInit(std::string file_name) {
     }
 }
 
+void ConsoleGuiHandler::reInit(std::string file_name) {
+    file_name = Filedirectory::getCurrentDirectory() + "/" + file_name;
+    FiledirectoryException e = fd.reInit(file_name);
+    if(e == FiledirectoryException::NO_EXCEPTION) {
+        list_files = fd.getFilesList();
+        current_selected_index = 0;
+        starting_index = 0;
+        redrawConsoleGui();
+    } else {
+        outputCorrespondingException(e);
+    }
+}
+
 void ConsoleGuiHandler::goUp() {
     reInit("..");
 }
 
-void ConsoleGuiHandler::rename() {
-    utils.outputLine("Input name:", saved_attributes);
-    std::string new_name = utils.inputLine(saved_attributes);
-    if(!new_name.empty()) {
-        if(Filedirectory::containsCurrent(new_name)) {
-            redrawConsoleGui();
-            utils.outputLine("File or directory with such name already exists!", saved_attributes);
-        } else {
-            FiledirectoryException ex = Filedirectory::changeName(list_files[current_selected_index].getName(), new_name);
-            switch(ex) {
-                case FiledirectoryException::NO_EXCEPTION:
-                    reInit(".");
-                    break;
-                case FiledirectoryException::INCORRECT_NAME:
-                    redrawConsoleGui();
-                    utils.outputLine("Preserved name!", saved_attributes);
-                    break;
-                case FiledirectoryException::ACCESS_DENIED:
-                    redrawConsoleGui();
-                    utils.outputLine("Access is denied!", saved_attributes);
-                    break;
-            }
-        }
-    } else {
+bool ConsoleGuiHandler::checkFile(const std::string &name) {
+    if(name.empty()) return false;
+    if(Filedirectory::containsCurrent(name)) {
         redrawConsoleGui();
+        utils.outputLine(FD_EXISTS, saved_attributes);
+        return false;
+    }
+    return true;
+}
+
+void ConsoleGuiHandler::rename() {
+    utils.outputLine(NAME_QUESTION, saved_attributes);
+    std::string new_name = utils.inputLine(saved_attributes);
+    if(!checkFile(new_name)) return;
+    rename(list_files[current_selected_index].getName(), new_name);
+}
+
+void ConsoleGuiHandler::rename(const std::string &old_name, const std::string &new_name) {
+    FiledirectoryException e = Filedirectory::changeName(old_name, new_name);
+    if(e == FiledirectoryException::NO_EXCEPTION) {
+        reInit(".");
+        utils.outputLine(SUCCESS_RENAME, saved_attributes);
+    } else {
+        outputCorrespondingException(e);
+    }
+}
+
+void ConsoleGuiHandler::createFileOrDir() {
+    utils.outputLine(NAME_QUESTION, saved_attributes);
+    std::string name = utils.inputLine(saved_attributes);
+    redrawConsoleGui();
+    if(!checkFile(name)) return;
+    utils.outputLine(FD_QUESTION, saved_attributes);
+    int c;
+iloop:
+    c = _getch();
+    switch(c) {
+        case 'd':
+        case 'D':
+            createDir(name);
+            break;
+        case 'f':
+        case 'F':
+            createFile(name);
+            break;
+        default:
+            goto iloop;
+    }
+}
+
+void ConsoleGuiHandler::createDir(const std::string &name) {
+    FiledirectoryException e = Filedirectory::createDir(name);
+    if(e == FiledirectoryException::NO_EXCEPTION) {
+        redrawConsoleGui();
+        reInit(".");
+        utils.outputLine(SUCCESS_CREATE_DIR, saved_attributes);
+    } else {
+        outputCorrespondingException(e);
+    }
+}
+
+void ConsoleGuiHandler::createFile(const std::string &name) {
+    FiledirectoryException e = Filedirectory::createFile(name);
+    if(e == FiledirectoryException::NO_EXCEPTION) {
+        redrawConsoleGui();
+        reInit(".");
+        utils.outputLine(SUCCESS_CREATE_FILE, saved_attributes);
+    } else {
+        outputCorrespondingException(e);
     }
 }
