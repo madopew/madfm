@@ -65,10 +65,13 @@ std::string FileDirectoryUtils::defineExtension(const std::string &name) {
 
 FiledirectoryException FileDirectoryUtils::handleExceptionCode(int code) {
     switch (code) {
+        case 13:
         case 5:
             return FiledirectoryException::ACCESS_DENIED;
         case 3:
             return FiledirectoryException::FILE_NOT_FOUND;
+        case 2:
+        case 267:
         case 183:
             return FiledirectoryException::INCORRECT_NAME;
         default:

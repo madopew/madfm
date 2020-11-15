@@ -230,7 +230,10 @@ bool ConsoleGuiHandler::checkFile(const std::string &name) {
 void ConsoleGuiHandler::rename() {
     utils.outputLine(NAME_QUESTION, saved_attributes);
     std::string new_name = utils.inputLine(saved_attributes);
-    if(!checkFile(new_name)) return;
+    if(!checkFile(new_name)) {
+        redrawConsoleGui();
+        return;
+    }
     rename(list_files[current_selected_index].getName(), new_name);
 }
 

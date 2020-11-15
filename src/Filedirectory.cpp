@@ -60,6 +60,7 @@ FiledirectoryException Filedirectory::createDir(const std::string &name) {
     try {
         fs::create_directory(path);
     } catch(const fs::filesystem_error& e) {
+        //printf(" %d ", e.code().value());
         return FileDirectoryUtils::handleExceptionCode(e.code().value());
     }
     return FiledirectoryException::NO_EXCEPTION;
@@ -67,9 +68,15 @@ FiledirectoryException Filedirectory::createDir(const std::string &name) {
 
 FiledirectoryException Filedirectory::createFile(const std::string &name) {
     auto path = fs::current_path() / name;
-    std::ofstream file(path.string());
-    if(file.bad()) {
-        return FiledirectoryException::UNHANDLED;
+    std::ofstream file;
+    std::ios_base::iostate exceptionMask = file.exceptions() | std::ios::failbit;
+    file.exceptions(exceptionMask);
+    try {
+        file.open(path.string());
+        file.close();
+    } catch (std::ios_base::failure& e) {
+        //printf(" %s %d ", strerror(errno), errno);
+        return FileDirectoryUtils::handleExceptionCode(errno);
     }
     return FiledirectoryException::NO_EXCEPTION;
 }
