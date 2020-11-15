@@ -291,3 +291,26 @@ void ConsoleGuiHandler::createFile(const std::string &name) {
         outputCorrespondingException(e);
     }
 }
+
+void ConsoleGuiHandler::deleteFile() {
+    utils.protectKeypress();
+    utils.outputLine(DEL_QUESTION, saved_attributes);
+    int c;
+    c = _getch();
+    redrawConsoleGui();
+    if(c == 'y' || c == 'Y') {
+        deleteFile(list_files[current_selected_index].getName());
+    }
+    utils.protectKeypress();
+}
+
+void ConsoleGuiHandler::deleteFile(const std::string &name) {
+    FiledirectoryException e = Filedirectory::deleteFile(name);
+    if(e == FiledirectoryException::NO_EXCEPTION) {
+        redrawConsoleGui();
+        reInit(".");
+        utils.outputLine(SUCCESS_DELETE, saved_attributes);
+    } else {
+        outputCorrespondingException(e);
+    }
+}

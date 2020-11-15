@@ -23,8 +23,10 @@ private:
     inline static const std::string SUCCESS_RENAME = "File or directory successfully renamed.";
     inline static const std::string SUCCESS_CREATE_DIR = "Directory successfully created.";
     inline static const std::string SUCCESS_CREATE_FILE = "File successfully created.";
+    inline static const std::string SUCCESS_DELETE = "Successfully deleted.";
     inline static const std::string FD_QUESTION = "Is it a (f)ile or a (d)irectory?";
     inline static const std::string NAME_QUESTION = "Input name:";
+    inline static const std::string DEL_QUESTION = "Are you sure you want to delete this? (y/N)";
 
     ConsoleGuiUtils utils;
     std::vector <ConsoleLine> current_lines;
@@ -51,6 +53,7 @@ private:
     void createDir(const std::string&);
     void outputCorrespondingException(FiledirectoryException);
     bool checkFile(const std::string&);
+    void deleteFile(const std::string&);
 public:
     ConsoleGuiHandler(HANDLE);
     ~ConsoleGuiHandler(void);
@@ -62,5 +65,6 @@ public:
     void createFileOrDir(void);
     void goUp(void);
     void rename(void);
+    void deleteFile(void);
 };
 #endif //MADFM_CONSOLEGUIHANDLER_H

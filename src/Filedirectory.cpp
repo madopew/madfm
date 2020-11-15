@@ -84,3 +84,14 @@ FiledirectoryException Filedirectory::createFile(const std::string &name) {
 bool Filedirectory::containsCurrent(const std::string &path) {
     return fs::exists(fs::current_path() / path);
 }
+
+FiledirectoryException Filedirectory::deleteFile(const std::string &name) {
+    auto path = fs::current_path() / name;
+    try {
+        fs::remove(path);
+    } catch(const fs::filesystem_error& e) {
+        printf(" %d ", e.code().value());
+        return FileDirectoryUtils::handleExceptionCode(e.code().value());
+    }
+    return FiledirectoryException::NO_EXCEPTION;
+}

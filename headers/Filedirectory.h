@@ -21,5 +21,6 @@ public:
     static bool containsCurrent(const std::string&);
     static FiledirectoryException createDir(const std::string&);
     static FiledirectoryException createFile(const std::string&);
+    static FiledirectoryException deleteFile(const std::string&);
 };
 #endif //MADFM_FILEDIRECTORY_H
