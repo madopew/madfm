@@ -19,7 +19,6 @@ public:
     void outputLine(ConsoleLine);
     void outputLine(const std::string &, WORD);
     void outputChar(const char, WORD);
-    static void protectKeypress(void);
     std::string inputLine(WORD);
 };
 #endif //MADFM_CONSOLEGUIUTILS_H

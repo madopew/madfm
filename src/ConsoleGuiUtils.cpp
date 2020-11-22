@@ -52,24 +52,17 @@ void ConsoleGuiUtils::outputChar(const char c, WORD attr) {
     FillConsoleOutputAttribute(h_console, attr, 1, current_cursor_coord, &written);
 }
 
-void ConsoleGuiUtils::protectKeypress() {
-    _getch();
-    while(_kbhit()) _getch();
-}
-
 std::string ConsoleGuiUtils::inputLine(WORD attr) {
-    protectKeypress();
     char buff[INPUT_MAX_LENGTH] = {0};
     int index = 0;
     int c;
 iloop:
-    c = _getch();
+    c = getch();
     switch(c) {
         case 27: //esc
             return "";
         case 0: //extended
-            _getch();
-            printf(" %s ", "extended");
+            getch();
             goto iloop;
         case '\n':
         case '\r':

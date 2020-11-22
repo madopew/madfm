@@ -1,77 +1,51 @@
 #include "../headers/KeypressHandler.h"
+#include <conio.h>
 
 KeypressHandler::KeypressHandler(ConsoleGuiHandler &cgh) : cgh(cgh) {
-    counter = 0;
-    down_pressed = false;
-    up_pressed = false;
-    right_pressed = false;
-    left_pressed = false;
-    r_pressed = false;
-    o_pressed = false;
-    n_pressed = false;
-    d_pressed = false;
-}
-
-inline bool KeypressHandler::callOnce(bool &exp, const short KEY, void (ConsoleGuiHandler:: *func_call)()) {
-    bool is_pressed = GetAsyncKeyState(KEY) < 0;
-    if (!exp && !is_pressed)
-        return false;
-
-    if (!exp && is_pressed) {
-        (cgh.*func_call)();
-        exp = true;
-        return true;
-    }
-
-    if (exp && !is_pressed) {
-        exp = false;
-    }
-    return false;
-}
-
-inline void KeypressHandler::fastForward(bool &exp, const short KEY, void (ConsoleGuiHandler:: *func_call)()) {
-    bool is_pressed = GetAsyncKeyState(KEY) < 0;
-    if (!exp && !is_pressed)
-        return;
-
-    if (!exp && is_pressed) {
-        (cgh.*func_call)();
-        exp = true;
-    }
-
-    if (exp && is_pressed) {
-        counter++;
-    }
-
-    if (counter > THRESHOLD && is_pressed) {
-        (cgh.*func_call)();
-        counter -= THRESHOLD_DRAWBACK;
-    }
-
-    if (exp && !is_pressed) {
-        exp = false;
-        counter = 0;
-    }
 }
 
 int KeypressHandler::start() {
-    HWND w_console = GetConsoleWindow();
-    while(true) {
-        if (GetForegroundWindow() == w_console) {
-            if (GetAsyncKeyState('Q') < 0)
-                return 0;
+    int c;
+    while(kbhit()) getch();
 
-            fastForward(down_pressed, VK_DOWN, &ConsoleGuiHandler::moveDown);
-            fastForward(up_pressed, VK_UP, &ConsoleGuiHandler::moveUp);
-
-            callOnce(right_pressed, VK_RIGHT, &ConsoleGuiHandler::openDir);
-            callOnce(left_pressed, VK_LEFT, &ConsoleGuiHandler::goUp);
-
-            callOnce(o_pressed, 'O', &ConsoleGuiHandler::open);
-            callOnce(r_pressed, 'R', &ConsoleGuiHandler::rename);
-            callOnce(n_pressed, 'N', &ConsoleGuiHandler::createFileOrDir);
-            callOnce(d_pressed, 'D', &ConsoleGuiHandler::deleteFile);
-        }
+mloop:
+    c = getch();
+    c = toupper(c);
+    switch(c) {
+        case 0: //func keys
+        case 224:
+            c = getch();
+            switch(c) {
+                case 72:  //up arrow
+                    cgh.moveUp();
+                    break;
+                case 80:  //down arrow
+                    cgh.moveDown();
+                    break;
+                case 75:  //left arrow
+                    cgh.goUp();
+                    break;
+                case 77:  //right arrow
+                    cgh.openDir();
+                    break;
+            }
+            goto mloop;
+        case 'Q':
+            return 0;
+        case 'O':
+            cgh.open();
+            goto mloop;
+        case 'R':
+            cgh.rename();
+            goto mloop;
+        case 'N':
+            cgh.createFileOrDir();
+            goto mloop;
+        case 'D':
+            cgh.deleteFile();
+            goto mloop;
+        default:
+            goto mloop;
     }
 }
 

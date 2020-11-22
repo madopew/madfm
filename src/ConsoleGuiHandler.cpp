@@ -271,7 +271,7 @@ void ConsoleGuiHandler::createFileOrDir() {
     utils.outputLine(FD_QUESTION, saved_attributes);
     int c;
 iloop:
-    c = _getch();
+    c = getch();
     switch(c) {
         case 'd':
         case 'D':
@@ -309,13 +309,13 @@ void ConsoleGuiHandler::createFile(const std::string &name) {
 }
 
 void ConsoleGuiHandler::deleteFile() {
-    ConsoleGuiUtils::protectKeypress();
     utils.outputLine(DEL_QUESTION, saved_attributes);
     int c;
     c = _getch();
-    redrawConsoleGui();
     if(c == 'y' || c == 'Y') {
         deleteFile(list_files[current_selected_index].getName());
+    } else {
+        redrawConsoleGui();
     }
 }
 
