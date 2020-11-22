@@ -60,7 +60,6 @@ FiledirectoryException Filedirectory::createDir(const std::string &name) {
     try {
         fs::create_directory(path);
     } catch(const fs::filesystem_error& e) {
-        //printf(" %d ", e.code().value());
         return FileDirectoryUtils::handleExceptionCode(e.code().value());
     }
     return FiledirectoryException::NO_EXCEPTION;

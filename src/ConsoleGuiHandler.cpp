@@ -230,10 +230,8 @@ bool ConsoleGuiHandler::checkFile(const std::string &name) {
 void ConsoleGuiHandler::rename() {
     utils.outputLine(NAME_QUESTION, saved_attributes);
     std::string new_name = utils.inputLine(saved_attributes);
-    if(!checkFile(new_name)) {
-        redrawConsoleGui();
-        return;
-    }
+    redrawConsoleGui();
+    if(!checkFile(new_name)) return;
     rename(list_files[current_selected_index].getName(), new_name);
 }
 
@@ -293,7 +291,7 @@ void ConsoleGuiHandler::createFile(const std::string &name) {
 }
 
 void ConsoleGuiHandler::deleteFile() {
-    utils.protectKeypress();
+    ConsoleGuiUtils::protectKeypress();
     utils.outputLine(DEL_QUESTION, saved_attributes);
     int c;
     c = _getch();
@@ -301,7 +299,6 @@ void ConsoleGuiHandler::deleteFile() {
     if(c == 'y' || c == 'Y') {
         deleteFile(list_files[current_selected_index].getName());
     }
-    utils.protectKeypress();
 }
 
 void ConsoleGuiHandler::deleteFile(const std::string &name) {
