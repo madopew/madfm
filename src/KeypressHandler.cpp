@@ -10,7 +10,6 @@ int KeypressHandler::start() {
 
 mloop:
     c = getch();
-    c = toupper(c);
     switch(c) {
         case 0: //func keys
         case 224:
@@ -30,17 +29,37 @@ mloop:
                     break;
             }
             goto mloop;
+        case 'h':
+            cgh.goUp();
+            goto mloop;
+        case 'j':
+            cgh.moveDown();
+            goto mloop;
+        case 'k':
+            cgh.moveUp();
+            goto mloop;
+        case 'l':
+            cgh.openDir();
+            goto mloop;
+        case 'H':
+            //help window
+            goto mloop;
+        case 'q':
         case 'Q':
             return 0;
+        case 'o':
         case 'O':
             cgh.open();
             goto mloop;
+        case 'r':
         case 'R':
             cgh.rename();
             goto mloop;
+        case 'n':
         case 'N':
             cgh.createFileOrDir();
             goto mloop;
+        case 'd':
         case 'D':
             cgh.deleteFile();
             goto mloop;
