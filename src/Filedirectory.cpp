@@ -88,7 +88,7 @@ bool Filedirectory::containsCurrent(const std::string &path) {
 FiledirectoryException Filedirectory::deleteFile(const std::string &name) {
     auto path = fs::current_path() / name;
     try {
-        fs::remove(path);
+        fs::remove_all(path);
     } catch(const fs::filesystem_error& e) {
         printf(" %d ", e.code().value());
         return FileDirectoryUtils::handleExceptionCode(e.code().value());
