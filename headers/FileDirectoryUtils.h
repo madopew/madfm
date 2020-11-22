@@ -12,7 +12,6 @@ private:
     inline static const std::string TIME_FORMAT = "%d-%m-%Y %H:%M";
     inline static const std::string UNITS[] = { "B", "kB", "MB", "GB", "TB" };
     static const int MAX_CHARS = 45;
-    static const int BASE_TWO_MUL = 1024;
     static const int SIZE_LENGTH = 7;
 
     static bool isFileExe(const std::string&);

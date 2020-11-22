@@ -37,8 +37,8 @@ std::string FileDirectoryUtils::parseSize(uintmax_t size, bool is_dir) {
     }
 
     int index = 0;
-    while (size > BASE_TWO_MUL) {
-        size /= BASE_TWO_MUL;
+    while (size > 1024) {
+        size >>= 10;
         index++;
     }
     std::string size_string = std::to_string(size).append(" ").append(UNITS[index]);
