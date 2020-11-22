@@ -332,7 +332,7 @@ void ConsoleGuiHandler::deleteFile(const std::string &name) {
 
 void ConsoleGuiHandler::showHelp() {
     utils.clearScreen();
-    for(auto line : HELP_LINES) {
+    for(const auto& line : HELP_LINES) {
         utils.outputLine(line, saved_attributes);
     }
     int c;
