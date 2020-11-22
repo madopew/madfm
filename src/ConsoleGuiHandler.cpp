@@ -329,3 +329,18 @@ void ConsoleGuiHandler::deleteFile(const std::string &name) {
         outputCorrespondingException(e);
     }
 }
+
+void ConsoleGuiHandler::showHelp() {
+    utils.clearScreen();
+    for(auto line : HELP_LINES) {
+        utils.outputLine(line, saved_attributes);
+    }
+    int c;
+    do {
+        c = getch();
+    } while (c != 'q' && c != 'Q');
+    utils.clearScreen();
+    current_lines.clear();
+    reserveLines();
+    redrawConsoleGui();
+}

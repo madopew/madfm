@@ -28,6 +28,31 @@ private:
     inline static const std::string NAME_QUESTION = "Input name:";
     inline static const std::string DEL_QUESTION = "Are you sure you want to delete this? (y/N)";
 
+    inline static const std::string HELP_LINES[] = {
+            "    Key                                    Function",
+            "=============================================================",
+            "                        NAVIGATION",
+            "j k ; UP DOWN                          up/down the list",
+            "h   ; LEFT                             previous directory",
+            "l   ; RIGHT                            next directory (open)",
+            "",
+            "=============================================================",
+            "",
+            "=============================================================",
+            "                        FILES/DIRS",
+            "   o/O                                 open file by default",
+            "   r/R                                 rename file/dir",
+            "   d/D                                 delete file/dir",
+            "   n/N                                 create file/dir",
+            "=============================================================",
+            "",
+            "=============================================================",
+            "                          OTHERS",
+            "    H                                  show this window",
+            "   q/Q                                 close this/program",
+            "============================================================="
+    };
+
     ConsoleGuiUtils utils;
     std::vector <ConsoleLine> current_lines;
     std::vector <ConsoleLine> next_lines;
@@ -67,5 +92,6 @@ public:
     void goUp(void);
     void rename(void);
     void deleteFile(void);
+    void showHelp(void);
 };
 #endif //MADFM_CONSOLEGUIHANDLER_H

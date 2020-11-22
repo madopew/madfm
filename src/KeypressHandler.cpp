@@ -42,7 +42,7 @@ mloop:
             cgh.openDir();
             goto mloop;
         case 'H':
-            //help window
+            cgh.showHelp();
             goto mloop;
         case 'q':
         case 'Q':
