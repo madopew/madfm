@@ -166,7 +166,7 @@ void ConsoleGuiHandler::open() {
     std::string file_name = list_files[current_selected_index].getName();
     switch(list_files[current_selected_index].getType()) {
         case FileType::DIR:
-            reInit(file_name);
+            reInitSafe(file_name);
             break;
         case FileType::EXE:
         case FileType::ORD:
@@ -179,7 +179,7 @@ void ConsoleGuiHandler::open() {
 void ConsoleGuiHandler::openDir() {
     std::string file_name = list_files[current_selected_index].getName();
     if(list_files[current_selected_index].getType() == FileType::DIR)
-        reInit(file_name);
+        reInitSafe(file_name);
 }
 
 void ConsoleGuiHandler::outputCorrespondingException(FiledirectoryException e) {
@@ -205,6 +205,23 @@ void ConsoleGuiHandler::reInit(std::string file_name) {
     FiledirectoryException e = fd.reInit(file_name);
     if(e == FiledirectoryException::NO_EXCEPTION) {
         list_files = fd.getFilesList();
+        if(current_selected_index >= list_files.size()) {
+            current_selected_index = list_files.size() - 1;
+        }
+        if(starting_index >= list_files.size() && list_files.size() != 0) {
+            starting_index -= MAX_FILES;
+        }
+        redrawConsoleGui();
+    } else {
+        outputCorrespondingException(e);
+    }
+}
+
+void ConsoleGuiHandler::reInitSafe(std::string file_name) {
+    file_name = Filedirectory::getCurrentDirectory() + "/" + file_name;
+    FiledirectoryException e = fd.reInit(file_name);
+    if(e == FiledirectoryException::NO_EXCEPTION) {
+        list_files = fd.getFilesList();
         current_selected_index = 0;
         starting_index = 0;
         redrawConsoleGui();
@@ -214,7 +231,7 @@ void ConsoleGuiHandler::reInit(std::string file_name) {
 }
 
 void ConsoleGuiHandler::goUp() {
-    reInit("..");
+    reInitSafe("..");
 }
 
 bool ConsoleGuiHandler::checkFile(const std::string &name) {
@@ -238,6 +255,7 @@ void ConsoleGuiHandler::rename() {
 void ConsoleGuiHandler::rename(const std::string &old_name, const std::string &new_name) {
     FiledirectoryException e = Filedirectory::changeName(old_name, new_name);
     if(e == FiledirectoryException::NO_EXCEPTION) {
+        redrawConsoleGui();
         reInit(".");
         utils.outputLine(SUCCESS_RENAME, saved_attributes);
     } else {

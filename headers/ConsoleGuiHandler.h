@@ -17,7 +17,7 @@ private:
     const WORD EXE_ATTR = (FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     const WORD TOO_MANY_ATTR = (FOREGROUND_RED | FOREGROUND_INTENSITY);
     const int MAX_FILES = 15;
-    const int MAX_ADDITIONAL_LINES = 6;
+    const int MAX_ADDITIONAL_LINES = 7;
     const UINT RUSSIAN_CP = 1251;
     inline static const std::string FD_EXISTS = "File or directory with such name already exists!";
     inline static const std::string SUCCESS_RENAME = "File or directory successfully renamed.";
@@ -43,6 +43,7 @@ private:
     void addSelected(int);
     void addNotSelected(int);
     void reInit(std::string);
+    void reInitSafe(std::string);
     void drawDifferentGui(void);
     void reduceCurrentLines(void);
     void appendFileInfo(ConsoleLine&, int);
