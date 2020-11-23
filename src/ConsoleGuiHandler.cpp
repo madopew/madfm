@@ -3,6 +3,8 @@
 #include <utility>
 #include <conio.h>
 
+#include <cstdio>
+
 ConsoleGuiHandler::ConsoleGuiHandler(HANDLE h_console) : utils(h_console), h_console(h_console), fd(".") {
     saveAttributes();
     SetConsoleCP(RUSSIAN_CP);
@@ -331,7 +333,7 @@ void ConsoleGuiHandler::deleteFile(const std::string &name) {
 }
 
 void ConsoleGuiHandler::showHelp() {
-    utils.clearScreen();
+    SetConsoleCursorPosition(h_console, {0,0});
     for(const auto& line : HELP_LINES) {
         utils.outputLine(line, saved_attributes);
     }
@@ -339,6 +341,84 @@ void ConsoleGuiHandler::showHelp() {
     do {
         c = getch();
     } while (c != 'q' && c != 'Q');
+    utils.clearScreen();
+    current_lines.clear();
+    reserveLines();
+    redrawConsoleGui();
+}
+
+void ConsoleGuiHandler::showRawView() {
+    FILE *f = fopen(list_files[current_selected_index].getName().c_str(), "r");
+    if(!f) {
+        utils.outputLine("Incompatible type!", saved_attributes);
+        return;
+    }
+
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    int columns, rows;
+    GetConsoleScreenBufferInfo(h_console, &csbi);
+    columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+    long start_offset = 0;
+    long page_offset = 0;
+    std::vector<long> last_offsets;
+    char *result;
+    char *line = (char*)calloc(columns + 1, 1);
+    int c;
+
+lloop:
+    utils.clearScreen();
+    fseek(f, start_offset, SEEK_SET);
+    for(int i = 0; i < rows-1; i++) {
+        result = fgets(line, columns+1, f);
+        if(i == 0) {
+            page_offset = strlen(line);
+        }
+        if(result == NULL) {
+            utils.outputLine("~", saved_attributes);
+        } else {
+            page_offset += strlen(line);
+            utils.outputLine(line, saved_attributes);
+            memset(line, 0, columns + 1);
+        }
+    }
+    if(result != NULL)
+        utils.outputLine("...", saved_attributes);
+iloop:
+    c = getch();
+    switch(c) {
+        case 0:
+        case 224:
+            c = getch();
+            switch(c) {
+                case 72:
+                    if(!last_offsets.empty()) {
+                        start_offset -= last_offsets.back();
+                        last_offsets.pop_back();
+                    } else {
+                        goto iloop;
+                    }
+                    break;
+                case 80:
+                    if(result != NULL) {
+                        start_offset += page_offset;
+                        last_offsets.push_back(page_offset);
+                    } else {
+                        goto iloop;
+                    }
+                    break;
+            }
+            goto lloop;
+        case 'q':
+        case 'Q':
+            break;
+        default:
+            goto lloop;
+    }
+
+    free(line);
+    fclose(f);
     utils.clearScreen();
     current_lines.clear();
     reserveLines();

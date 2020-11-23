@@ -27,6 +27,9 @@ mloop:
                 case 77:  //right arrow
                     cgh.openDir();
                     break;
+                case 60:  //f2
+                    cgh.showHelp();
+                    break;
             }
             goto mloop;
         case 'h':
@@ -41,8 +44,9 @@ mloop:
         case 'l':
             cgh.openDir();
             goto mloop;
-        case 'H':
-            cgh.showHelp();
+        case 'v':
+        case 'V':
+            cgh.showRawView();
             goto mloop;
         case 'q':
         case 'Q':

@@ -44,11 +44,12 @@ private:
             "   r/R                                 rename file/dir",
             "   d/D                                 delete file/dir",
             "   n/N                                 create file/dir",
+            "   v/V                                 show raw view",
             "=============================================================",
             "",
             "=============================================================",
             "                          OTHERS",
-            "    H                                  show this window",
+            "   F2                                  show this window",
             "   q/Q                                 close this/program",
             "============================================================="
     };
@@ -93,5 +94,6 @@ public:
     void rename(void);
     void deleteFile(void);
     void showHelp(void);
+    void showRawView(void);
 };
 #endif //MADFM_CONSOLEGUIHANDLER_H
