@@ -46,7 +46,7 @@ mloop:
             goto mloop;
         case 'v':
         case 'V':
-            cgh.showRawView();
+            cgh.showPreview();
             goto mloop;
         case 'q':
         case 'Q':

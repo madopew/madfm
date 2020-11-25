@@ -71,6 +71,7 @@ private:
     void reInit(std::string);
     void reInitSafe(std::string);
     void drawDifferentGui(void);
+    void cleanRedrawConsoleGui(void);
     void reduceCurrentLines(void);
     void appendFileInfo(ConsoleLine&, int);
     void saveAttributes(void);
@@ -81,6 +82,8 @@ private:
     void outputCorrespondingException(FiledirectoryException);
     bool checkFile(const std::string&);
     void deleteFile(const std::string&);
+    void showTextPreview(int, int, FILE*);
+    void showRawPreview(int, int, FILE*);
 public:
     ConsoleGuiHandler(HANDLE);
     ~ConsoleGuiHandler(void);
@@ -94,6 +97,6 @@ public:
     void rename(void);
     void deleteFile(void);
     void showHelp(void);
-    void showRawView(void);
+    void showPreview(void);
 };
 #endif //MADFM_CONSOLEGUIHANDLER_H

@@ -106,6 +106,13 @@ void ConsoleGuiHandler::redrawConsoleGui() {
     drawDifferentGui();
 }
 
+void ConsoleGuiHandler::cleanRedrawConsoleGui() {
+    utils.clearScreen();
+    current_lines.clear();
+    reserveLines();
+    redrawConsoleGui();
+}
+
 void ConsoleGuiHandler::drawDifferentGui() {
     for (int i = 0; i < next_lines.size(); i++) {
         if (current_lines[i] != next_lines[i]) {
@@ -283,6 +290,9 @@ iloop:
         case 'F':
             createFile(name);
             break;
+        case 27:
+            redrawConsoleGui();
+            break;
         default:
             goto iloop;
     }
@@ -333,7 +343,7 @@ void ConsoleGuiHandler::deleteFile(const std::string &name) {
 }
 
 void ConsoleGuiHandler::showHelp() {
-    SetConsoleCursorPosition(h_console, {0,0});
+    utils.clearScreen();
     for(const auto& line : HELP_LINES) {
         utils.outputLine(line, saved_attributes);
     }
@@ -341,16 +351,12 @@ void ConsoleGuiHandler::showHelp() {
     do {
         c = getch();
     } while (c != 'q' && c != 'Q');
-    utils.clearScreen();
-    current_lines.clear();
-    reserveLines();
-    redrawConsoleGui();
+    cleanRedrawConsoleGui();
 }
 
-void ConsoleGuiHandler::showRawView() {
+void ConsoleGuiHandler::showPreview() {
     FILE *f = fopen(list_files[current_selected_index].getName().c_str(), "r");
     if(!f) {
-        utils.outputLine("Incompatible type!", saved_attributes);
         return;
     }
 
@@ -360,67 +366,69 @@ void ConsoleGuiHandler::showRawView() {
     columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
     rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 
-    long start_offset = 0;
-    long page_offset = 0;
-    std::vector<long> last_offsets;
-    char *result;
-    char *line = (char*)calloc(columns + 1, 1);
+    utils.outputLine("Show (r)aw or (t)ext view?", saved_attributes);
     int c;
-
-lloop:
-    utils.clearScreen();
-    fseek(f, start_offset, SEEK_SET);
-    for(int i = 0; i < rows-1; i++) {
-        result = fgets(line, columns+1, f);
-        if(i == 0) {
-            page_offset = strlen(line);
-        }
-        if(result == NULL) {
-            utils.outputLine("~", saved_attributes);
-        } else {
-            page_offset += strlen(line);
-            utils.outputLine(line, saved_attributes);
-            memset(line, 0, columns + 1);
-        }
-    }
-    if(result != NULL)
-        utils.outputLine("...", saved_attributes);
 iloop:
     c = getch();
+    c = toupper(c);
     switch(c) {
-        case 0:
-        case 224:
-            c = getch();
-            switch(c) {
-                case 72:
-                    if(!last_offsets.empty()) {
-                        start_offset -= last_offsets.back();
-                        last_offsets.pop_back();
-                    } else {
-                        goto iloop;
-                    }
-                    break;
-                case 80:
-                    if(result != NULL) {
-                        start_offset += page_offset;
-                        last_offsets.push_back(page_offset);
-                    } else {
-                        goto iloop;
-                    }
-                    break;
-            }
-            goto lloop;
-        case 'q':
-        case 'Q':
+        case 'T':
+            utils.clearScreen();
+            showTextPreview(rows, columns, f);
             break;
-        default:
-            goto lloop;
+        case 'R':
+            utils.clearScreen();
+            showRawPreview(rows, columns, f);
+            break;
+        case 27:
+            redrawConsoleGui();
+            return;
+        default: goto iloop;
     }
 
-    free(line);
+eloop:
+    c = getch();
+    c = toupper(c);
+    if(c != 'Q') goto eloop;
+
     fclose(f);
-    utils.clearScreen();
-    current_lines.clear();
-    reserveLines();
-    redrawConsoleGui();
+    cleanRedrawConsoleGui();
+}
+
+void ConsoleGuiHandler::showTextPreview(int rows, int columns, FILE *f) {
+    int c;
+    int skip_start = 0;
+    for(int i = 0; i < rows - 1; i++) {
+        for(int j = 0; j < columns; j++) {
+            if(j == 0 && !skip_start) {
+                utils.outputChar('~', saved_attributes);
+                utils.outputChar(' ', saved_attributes);
+                j++;
+                continue;
+            }
+            c = fgetc(f);
+            if(c == '\n' || c == EOF) {
+                skip_start = 0;
+                if(i != rows - 2)
+                    utils.outputChar('\n', saved_attributes);
+                break;
+            } else if(c == '\t') {
+                for(int k = 0; k < 4; k++) {
+                    utils.outputChar(' ', saved_attributes);
+                }
+                j+=3;
+            } else {
+                utils.outputChar(c, saved_attributes);
+                if(j == columns - 1) {
+                    skip_start = 1;
+                }
+            }
+        }
+    }
+    if(c != EOF)
+        utils.outputLine("\n-->Preview doesn't contain the whole file! Consider opening it in 'o' mode<--", saved_attributes);
+}
+
+void ConsoleGuiHandler::showRawPreview(int rows, int columns, FILE *f) {
+
 }
