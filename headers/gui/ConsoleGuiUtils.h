@@ -18,6 +18,8 @@ public:
     void clearLine(COORD);
     void outputLine(ConsoleLine);
     void outputLine(const std::string &, WORD);
+    void outputLineNoNew(ConsoleLine);
+    void outputLineNoNew(const std::string &, WORD);
     void outputChar(const char, WORD);
     std::string inputLine(WORD);
 };

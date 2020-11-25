@@ -43,6 +43,19 @@ void ConsoleGuiUtils::outputLine(const std::string& str, WORD attr) {
     outputLine(ConsoleLine(str, attr));
 }
 
+void ConsoleGuiUtils::outputLineNoNew(ConsoleLine line) {
+    CONSOLE_SCREEN_BUFFER_INFO s;
+    GetConsoleScreenBufferInfo(h_console, &s);
+    COORD current_cursor_coord = s.dwCursorPosition;
+    DWORD written;
+    WriteConsoleA(h_console, line.getText().c_str(), line.getText().size(), &written, nullptr);
+    FillConsoleOutputAttribute(h_console, line.getAttribute(), line.getText().size(), current_cursor_coord, &written);
+}
+
+void ConsoleGuiUtils::outputLineNoNew(const std::string& str, WORD attr) {
+    outputLineNoNew(ConsoleLine(str, attr));
+}
+
 void ConsoleGuiUtils::outputChar(const char c, WORD attr) {
     CONSOLE_SCREEN_BUFFER_INFO s;
     GetConsoleScreenBufferInfo(h_console, &s);
