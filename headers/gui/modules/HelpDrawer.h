@@ -28,7 +28,7 @@ private:
             "   d/D                                 delete file/dir",
             "   n/N                                 create file/dir",
             "   v                                   show text preview",
-            "   V                                   show raw preview",
+            "(shift)V                               show hexdump",
             "=============================================================",
             "",
             "=============================================================",
