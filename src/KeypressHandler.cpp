@@ -45,8 +45,10 @@ mloop:
             cgh.openDir();
             goto mloop;
         case 'v':
+            cgh.showTextPreview();
+            goto mloop;
         case 'V':
-            cgh.showPreview();
+            cgh.showRawPreview();
             goto mloop;
         case 'q':
         case 'Q':
