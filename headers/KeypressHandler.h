@@ -1,13 +1,13 @@
 #ifndef MADFM_KEYPRESSHANDLER_H
 #define MADFM_KEYPRESSHANDLER_H
 
-#include "ConsoleGuiHandler.h"
+#include "gui/ConsoleGuiHandler.h"
 
 class KeypressHandler {
 private:
-    ConsoleGuiHandler cgh;
+    ConsoleGuiHandler *cgh;
 public:
-    KeypressHandler(ConsoleGuiHandler&);
+    KeypressHandler(ConsoleGuiHandler*);
     int start(void);
 };
 #endif //MADFM_KEYPRESSHANDLER_H

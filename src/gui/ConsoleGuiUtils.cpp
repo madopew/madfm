@@ -1,4 +1,4 @@
-#include "../headers/ConsoleGuiUtils.h"
+#include "../../headers/gui/ConsoleGuiUtils.h"
 #include <conio.h>
 
 ConsoleGuiUtils::ConsoleGuiUtils(HANDLE h_console) : h_console(h_console) {}

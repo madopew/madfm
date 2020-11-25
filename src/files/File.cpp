@@ -1,5 +1,5 @@
-#include "../headers/File.h"
-#include "../headers/FileDirectoryUtils.h"
+#include "../../headers/files/File.h"
+#include "../../headers/files/FileDirectoryUtils.h"
 
 File::File(const std::filesystem::directory_entry &entry) {
     name_orig = entry.path().filename().string();

@@ -1,7 +1,7 @@
 #include "ConsoleLine.h"
 #include "ConsoleGuiHandler.h"
 #include <vector>
-#include <windows.h>
+#include <Windows.h>
 
 #ifndef MADFM_CONSOLEGUIUTILS_H
 #define MADFM_CONSOLEGUIUTILS_H

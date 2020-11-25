@@ -1,7 +1,7 @@
 #include "../headers/KeypressHandler.h"
 #include <conio.h>
 
-KeypressHandler::KeypressHandler(ConsoleGuiHandler &cgh) : cgh(cgh) {
+KeypressHandler::KeypressHandler(ConsoleGuiHandler *cgh) : cgh(cgh) {
 }
 
 int KeypressHandler::start() {
@@ -16,58 +16,58 @@ mloop:
             c = getch();
             switch(c) {
                 case 72:  //up arrow
-                    cgh.moveUp();
+                    cgh->moveUp();
                     break;
                 case 80:  //down arrow
-                    cgh.moveDown();
+                    cgh->moveDown();
                     break;
                 case 75:  //left arrow
-                    cgh.goUp();
+                    cgh->goUp();
                     break;
                 case 77:  //right arrow
-                    cgh.openDir();
+                    cgh->openDir();
                     break;
                 case 60:  //f2
-                    cgh.showHelp();
+                    cgh->showHelp();
                     break;
             }
             goto mloop;
         case 'h':
-            cgh.goUp();
+            cgh->goUp();
             goto mloop;
         case 'j':
-            cgh.moveDown();
+            cgh->moveDown();
             goto mloop;
         case 'k':
-            cgh.moveUp();
+            cgh->moveUp();
             goto mloop;
         case 'l':
-            cgh.openDir();
+            cgh->openDir();
             goto mloop;
         case 'v':
-            cgh.showTextPreview();
+            cgh->showTextPreview();
             goto mloop;
         case 'V':
-            cgh.showRawPreview();
+            cgh->showRawPreview();
             goto mloop;
         case 'q':
         case 'Q':
             return 0;
         case 'o':
         case 'O':
-            cgh.open();
+            cgh->open();
             goto mloop;
         case 'r':
         case 'R':
-            cgh.rename();
+            cgh->rename();
             goto mloop;
         case 'n':
         case 'N':
-            cgh.createFileOrDir();
+            cgh->createFileOrDir();
             goto mloop;
         case 'd':
         case 'D':
-            cgh.deleteFile();
+            cgh->deleteFile();
             goto mloop;
         default:
             goto mloop;

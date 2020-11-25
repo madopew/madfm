@@ -1,5 +1,5 @@
 #include <string>
-#include <windows.h>
+#include <Windows.h>
 
 #ifndef MADFM_CONSOLELINE_H
 #define MADFM_CONSOLELINE_H

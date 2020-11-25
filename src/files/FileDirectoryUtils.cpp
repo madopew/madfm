@@ -2,7 +2,7 @@
 // Created by Madi on 05.11.2020.
 //
 
-#include "../headers/FileDirectoryUtils.h"
+#include "../../headers/files/FileDirectoryUtils.h"
 
 std::string FileDirectoryUtils::parseName(std::string name) {
     if (name.length() <= MAX_CHARS)

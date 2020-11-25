@@ -1,4 +1,4 @@
-#include "../headers/ConsoleLine.h"
+#include "../../headers/gui/ConsoleLine.h"
 
 #include <utility>
 
