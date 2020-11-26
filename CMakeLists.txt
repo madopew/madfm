@@ -31,4 +31,4 @@ add_executable(madfm
         src/gui/modules/FileDeleter.cpp
         headers/gui/modules/FilePreviewer.h
         src/gui/modules/FilePreviewer.cpp
-        )
+        headers/gui/modules/FileMover.h src/gui/modules/FileMover.cpp)

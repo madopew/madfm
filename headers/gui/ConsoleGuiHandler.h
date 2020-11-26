@@ -13,6 +13,7 @@
 #include "modules/FileDeleter.h"
 #include "modules/FileRenamer.h"
 #include "modules/FilePreviewer.h"
+#include "modules/FileMover.h"
 
 class ConsoleGuiHandler {
     friend class MenuDrawer;
@@ -21,6 +22,7 @@ class ConsoleGuiHandler {
     friend class FileRenamer;
     friend class FileDeleter;
     friend class FilePreviewer;
+    friend class FileMover;
 private:
     MenuDrawer *menuDrawer;
     HelpDrawer *helpDrawer;
@@ -28,6 +30,7 @@ private:
     FileRenamer *fileRenamer;
     FileDeleter *fileDeleter;
     FilePreviewer *filePreviewer;
+    FileMover *fileMover;
 
     int current_selected_index = 0;
     int starting_index = 0;
@@ -39,7 +42,7 @@ private:
     std::vector<File> list_files;
     void cleanRedrawConsoleGui(void);
     void reInit(std::string);
-    void reInitSave(std::string);
+    void reInitSafe(std::string file_name);
     void outputCorrespondingException(FiledirectoryException);
     bool checkFile(const std::string&);
     inline static const std::string FD_EXISTS = "File or directory with such name already exists!";
@@ -59,5 +62,8 @@ public:
     void showHelp(void);
     void showTextPreview(void);
     void showRawPreview(void);
+    void saveLocation(void);
+    void moveFile(void);
+    void copyFile(void);
 };
 #endif //MADFM_CONSOLEGUIHANDLER_H

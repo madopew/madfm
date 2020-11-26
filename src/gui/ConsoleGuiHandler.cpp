@@ -16,6 +16,7 @@ ConsoleGuiHandler::ConsoleGuiHandler(HANDLE h_console) : utils(h_console), h_con
     fileRenamer = new FileRenamer(this);
     fileDeleter = new FileDeleter(this);
     filePreviewer = new FilePreviewer(this);
+    fileMover = new FileMover(this);
 
     SetConsoleCP(RUSSIAN_CP);
     SetConsoleOutputCP(RUSSIAN_CP);
@@ -72,14 +73,14 @@ void ConsoleGuiHandler::moveUp() {
 }
 
 void ConsoleGuiHandler::goUp() {
-    reInitSave("..");
+    reInitSafe("..");
 }
 
 void ConsoleGuiHandler::open() {
     std::string file_name = list_files[current_selected_index].getName();
     switch(list_files[current_selected_index].getType()) {
         case FileType::DIR:
-            reInitSave(file_name);
+            reInitSafe(file_name);
             break;
         case FileType::EXE:
         case FileType::ORD:
@@ -92,10 +93,11 @@ void ConsoleGuiHandler::open() {
 void ConsoleGuiHandler::openDir() {
     std::string file_name = list_files[current_selected_index].getName();
     if(list_files[current_selected_index].getType() == FileType::DIR)
-        reInitSave(file_name);
+        reInitSafe(file_name);
 }
 
 void ConsoleGuiHandler::reInit(std::string file_name) {
+    redrawConsoleGui();
     file_name = Filedirectory::getCurrentDirectory() + "/" + file_name;
     FiledirectoryException e = fd.reInit(file_name);
     if(e == FiledirectoryException::NO_EXCEPTION) {
@@ -112,7 +114,8 @@ void ConsoleGuiHandler::reInit(std::string file_name) {
     }
 }
 
-void ConsoleGuiHandler::reInitSave(std::string file_name) {
+void ConsoleGuiHandler::reInitSafe(std::string file_name) {
+    redrawConsoleGui();
     file_name = Filedirectory::getCurrentDirectory() + "/" + file_name;
     FiledirectoryException e = fd.reInit(file_name);
     if(e == FiledirectoryException::NO_EXCEPTION) {
@@ -175,4 +178,16 @@ void ConsoleGuiHandler::showTextPreview() {
 
 void ConsoleGuiHandler::showRawPreview() {
     filePreviewer->showRawPreview();
+}
+
+void ConsoleGuiHandler::saveLocation() {
+    fileMover->saveLocation();
+}
+
+void ConsoleGuiHandler::moveFile() {
+    fileMover->moveFile();
+}
+
+void ConsoleGuiHandler::copyFile() {
+    fileMover->copyFile();
 }
