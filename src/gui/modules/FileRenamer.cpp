@@ -6,6 +6,7 @@
 FileRenamer::FileRenamer(ConsoleGuiHandler *cgh) : cgh(cgh) {}
 
 void FileRenamer::rename() {
+    cgh->redrawConsoleGui();
     cgh->utils.outputLine(cgh->NAME_QUESTION, cgh->saved_attributes);
     std::string new_name = cgh->utils.inputLine(cgh->saved_attributes);
     cgh->redrawConsoleGui();

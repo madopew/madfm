@@ -8,6 +8,7 @@
 FileCreator::FileCreator(ConsoleGuiHandler *cgh) : cgh(cgh) {}
 
 void FileCreator::createFileOrDir() {
+    cgh->redrawConsoleGui();
     cgh->utils.outputLine(ConsoleGuiHandler::NAME_QUESTION, cgh->saved_attributes);
     std::string name = cgh->utils.inputLine(cgh->saved_attributes);
     cgh->redrawConsoleGui();
