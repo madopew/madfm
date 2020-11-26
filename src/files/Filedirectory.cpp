@@ -44,15 +44,28 @@ std::string Filedirectory::getCurrentDirectory() {
     return fs::current_path().generic_string();
 }
 
-FiledirectoryException Filedirectory::changeName(const std::string& old_name, const std::string& new_name) {
-    auto old_p = fs::current_path() / old_name;
-    auto new_p = fs::current_path() / new_name;
+FiledirectoryException Filedirectory::move(const std::string &old_path, const std::string &new_path) {
     try {
-        fs::rename(old_p, new_p);
+        fs::rename(old_path, new_path);
     } catch (const fs::filesystem_error& e) {
         return FileDirectoryUtils::handleExceptionCode(e.code().value());
     }
     return FiledirectoryException::NO_EXCEPTION;
+}
+
+FiledirectoryException Filedirectory::copy(const std::string &old_path, const std::string &new_path) {
+    try {
+        fs::copy(old_path, new_path);
+    } catch (const fs::filesystem_error& e) {
+        return FileDirectoryUtils::handleExceptionCode(e.code().value());
+    }
+    return FiledirectoryException::NO_EXCEPTION;
+}
+
+FiledirectoryException Filedirectory::changeName(const std::string& old_name, const std::string& new_name) {
+    auto old_p = fs::current_path() / old_name;
+    auto new_p = fs::current_path() / new_name;
+    return move(old_p.string(), new_p.string());
 }
 
 FiledirectoryException Filedirectory::createDir(const std::string &name) {

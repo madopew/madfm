@@ -69,6 +69,18 @@ mloop:
         case 'D':
             cgh->deleteFile();
             goto mloop;
+        case 'c':
+        case 'C':
+            cgh->saveLocation();
+            goto mloop;
+        case 'm':
+        case 'M':
+            cgh->moveFile();
+            goto mloop;
+        case 'p':
+        case 'P':
+            cgh->copyFile();
+            goto mloop;
         default:
             goto mloop;
     }

@@ -17,6 +17,8 @@ public:
     FiledirectoryException reInit(const std::string&);
     std::vector<File> getFilesList(void);
     static std::string getCurrentDirectory(void);
+    static FiledirectoryException move(const std::string&, const std::string&);
+    static FiledirectoryException copy(const std::string&, const std::string&);
     static FiledirectoryException changeName(const std::string&, const std::string&);
     static bool containsCurrent(const std::string&);
     static FiledirectoryException createDir(const std::string&);
