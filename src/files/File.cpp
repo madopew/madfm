@@ -9,6 +9,14 @@ File::File(const std::filesystem::directory_entry &entry) {
     time = FileDirectoryUtils::parseTime(entry.last_write_time());
 }
 
+File::File(const std::string &drive) {
+    name_orig = drive;
+    name_parsed = name_orig;
+    type = FileType::DIR;
+    size = "Drive";
+    time = "Logical";
+}
+
 std::string File::getName() {
     return name_orig;
 }

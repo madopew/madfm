@@ -11,16 +11,18 @@ enum class FiledirectoryException {NO_EXCEPTION, ACCESS_DENIED, FILE_NOT_FOUND, 
 class Filedirectory {
 private:
     std::vector<File> list;
+    bool is_drives;
     void fillList(const std::string&);
+    void fillListDrives();
 public:
     Filedirectory(const std::string &);
     FiledirectoryException reInit(const std::string&);
     std::vector<File> getFilesList(void);
-    static std::string getCurrentDirectory(void);
+    std::string getCurrentDirectory(void) const;
+    bool containsCurrent(const std::string&);
     static FiledirectoryException move(const std::string&, const std::string&);
     static FiledirectoryException copy(const std::string&, const std::string&);
     static FiledirectoryException changeName(const std::string&, const std::string&);
-    static bool containsCurrent(const std::string&);
     static FiledirectoryException createDir(const std::string&);
     static FiledirectoryException createFile(const std::string&);
     static FiledirectoryException deleteFile(const std::string&);

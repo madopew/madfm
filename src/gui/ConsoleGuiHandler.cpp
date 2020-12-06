@@ -98,7 +98,7 @@ void ConsoleGuiHandler::openDir() {
 
 void ConsoleGuiHandler::reInit(std::string file_name) {
     redrawConsoleGui();
-    file_name = Filedirectory::getCurrentDirectory() + "/" + file_name;
+    //file_name = fd.getCurrentDirectory() + "/" + file_name;
     FiledirectoryException e = fd.reInit(file_name);
     if(e == FiledirectoryException::NO_EXCEPTION) {
         list_files = fd.getFilesList();
@@ -116,7 +116,7 @@ void ConsoleGuiHandler::reInit(std::string file_name) {
 
 void ConsoleGuiHandler::reInitSafe(std::string file_name) {
     redrawConsoleGui();
-    file_name = Filedirectory::getCurrentDirectory() + "/" + file_name;
+    //file_name = fd.getCurrentDirectory() + "/" + file_name;
     FiledirectoryException e = fd.reInit(file_name);
     if(e == FiledirectoryException::NO_EXCEPTION) {
         list_files = fd.getFilesList();
@@ -148,7 +148,7 @@ void ConsoleGuiHandler::outputCorrespondingException(FiledirectoryException e) {
 
 bool ConsoleGuiHandler::checkFile(const std::string &name) {
     if(name.empty()) return false;
-    if(Filedirectory::containsCurrent(name)) {
+    if(fd.containsCurrent(name)) {
         redrawConsoleGui();
         utils.outputLine(FD_EXISTS, saved_attributes);
         return false;

@@ -25,7 +25,7 @@ void MenuDrawer::redrawConsoleGui() {
 }
 
 void MenuDrawer::addDirLine() {
-    std::string dir = std::string(CONST_PREFIXES[DIR_PREFIX]).append(Filedirectory::getCurrentDirectory());
+    std::string dir = std::string(CONST_PREFIXES[DIR_PREFIX]).append(cgh->fd.getCurrentDirectory());
     ConsoleLine dir_line(dir, cgh->saved_attributes);
     next_lines.push_back(dir_line);
     next_lines.emplace_back();

@@ -4,28 +4,38 @@
 #include <filesystem>
 #include <fstream>
 
+#include <windows.h>
+
 namespace fs = std::filesystem;
 
 Filedirectory::Filedirectory(const std::string &path) {
     reInit(path);
+    is_drives = false;
 }
 
 FiledirectoryException Filedirectory::reInit(const std::string &path) {
-    try {
-        const auto& entry = fs::directory_iterator(path);
-    } catch (const std::system_error& e) {
-        return FileDirectoryUtils::handleExceptionCode(e.code().value());
-    }
+    std::error_code ec;
+    const auto& entry = fs::directory_iterator(path, ec);
+    if (ec.value() != 0)
+        return FileDirectoryUtils::handleExceptionCode(ec.value());
     fillList(path);
     return FiledirectoryException::NO_EXCEPTION;
 }
 
 void Filedirectory::fillList(const std::string& path) {
+    auto prev_path = fs::current_path();
     fs::current_path(path);
+    auto current_path = fs::current_path();
+    if (path == ".." && prev_path == current_path && !is_drives) {
+        is_drives = true;
+        fillListDrives();
+        return;
+    }
+    is_drives = false;
     list.clear();
     int last_dir_index = 0;
-    for (const auto& entry : fs::directory_iterator(path)) {
-       File f(entry);
+    for (const auto& entry : fs::directory_iterator(current_path)) {
+        File f(entry);
         if (f.getType() == FileType::DIR) {
             auto it = list.begin() + last_dir_index;
             list.insert(it, f);
@@ -36,29 +46,43 @@ void Filedirectory::fillList(const std::string& path) {
     }
 }
 
+void Filedirectory::fillListDrives() {
+    list.clear();
+    DWORD drives = GetLogicalDrives();
+    for (unsigned int drive = 1, letter = 'A'; drive != 0x80000000; drive <<= 1, letter++) {
+        if ((drives & drive) != 0) {
+            std::string drive_name = std::string(1, letter);
+            drive_name.append(":\\");
+            File f(drive_name);
+            list.push_back(f);
+        }
+    }
+}
+
 std::vector<File> Filedirectory::getFilesList() {
     return list;
 }
 
-std::string Filedirectory::getCurrentDirectory() {
+std::string Filedirectory::getCurrentDirectory() const {
+    if (is_drives) {
+        return "";
+    }
     return fs::current_path().generic_string();
 }
 
 FiledirectoryException Filedirectory::move(const std::string &old_path, const std::string &new_path) {
-    try {
-        fs::rename(old_path, new_path);
-    } catch (const fs::filesystem_error& e) {
-        return FileDirectoryUtils::handleExceptionCode(e.code().value());
-    }
+    std::error_code ec;
+    fs::rename(old_path, new_path, ec);
+    if(ec.value() != 0)
+        return FileDirectoryUtils::handleExceptionCode(ec.value());
     return FiledirectoryException::NO_EXCEPTION;
 }
 
 FiledirectoryException Filedirectory::copy(const std::string &old_path, const std::string &new_path) {
-    try {
-        fs::copy(old_path, new_path);
-    } catch (const fs::filesystem_error& e) {
-        return FileDirectoryUtils::handleExceptionCode(e.code().value());
-    }
+    std::error_code ec;
+    fs::copy(old_path, new_path, ec);
+    if(ec.value() != 0)
+        return FileDirectoryUtils::handleExceptionCode(ec.value());
     return FiledirectoryException::NO_EXCEPTION;
 }
 
@@ -69,27 +93,21 @@ FiledirectoryException Filedirectory::changeName(const std::string& old_name, co
 }
 
 FiledirectoryException Filedirectory::createDir(const std::string &name) {
+    std::error_code ec;
     auto path = fs::current_path() / name;
-    try {
-        fs::create_directory(path);
-    } catch(const fs::filesystem_error& e) {
-        return FileDirectoryUtils::handleExceptionCode(e.code().value());
-    }
+    fs::create_directory(path, ec);
+    if (ec.value() != 0)
+        return FileDirectoryUtils::handleExceptionCode(ec.value());
     return FiledirectoryException::NO_EXCEPTION;
 }
 
 FiledirectoryException Filedirectory::createFile(const std::string &name) {
     auto path = fs::current_path() / name;
     std::ofstream file;
-    std::ios_base::iostate exceptionMask = file.exceptions() | std::ios::failbit;
-    file.exceptions(exceptionMask);
-    try {
-        file.open(path.string());
-        file.close();
-    } catch (std::ios_base::failure& e) {
-        //printf(" %s %d ", strerror(errno), errno);
+    file.open(path.string());
+    file.close();
+    if(errno != 0)
         return FileDirectoryUtils::handleExceptionCode(errno);
-    }
     return FiledirectoryException::NO_EXCEPTION;
 }
 
@@ -98,12 +116,10 @@ bool Filedirectory::containsCurrent(const std::string &path) {
 }
 
 FiledirectoryException Filedirectory::deleteFile(const std::string &name) {
+    std::error_code ec;
     auto path = fs::current_path() / name;
-    try {
-        fs::remove_all(path);
-    } catch(const fs::filesystem_error& e) {
-        printf(" %d ", e.code().value());
-        return FileDirectoryUtils::handleExceptionCode(e.code().value());
-    }
+    fs::remove_all(path, ec);
+    if (ec.value() != 0)
+        return FileDirectoryUtils::handleExceptionCode(ec.value());
     return FiledirectoryException::NO_EXCEPTION;
 }

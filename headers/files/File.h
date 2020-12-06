@@ -14,6 +14,7 @@ private:
     std::string time;
 public:
     File(const std::filesystem::directory_entry&);
+    File(const std::string&);
     FileType getType(void);
     std::string getName(void);
     std::string getParsedName(void);

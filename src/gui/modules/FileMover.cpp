@@ -10,7 +10,7 @@ FileMover::FileMover(ConsoleGuiHandler *cgh): cgh(cgh), saved_location(""), save
 
 void FileMover::saveLocation() {
     saved_name = cgh->list_files[cgh->current_selected_index].getName();
-    saved_location = Filedirectory::getCurrentDirectory() + "/" + saved_name;
+    saved_location = cgh->fd.getCurrentDirectory() + "/" + saved_name;
     cgh->redrawConsoleGui();
     cgh->utils.outputLine(MSG_LOC_SAVED, cgh->saved_attributes);
 }
@@ -20,7 +20,7 @@ void FileMover::moveOrCopyHandle(FiledirectoryException (*func)(const std::strin
         return;
     }
     std::string old_p = saved_location;
-    std::string new_p = Filedirectory::getCurrentDirectory() + "/" + saved_name;
+    std::string new_p = cgh->fd.getCurrentDirectory() + "/" + saved_name;
     if(!cgh->checkFile(new_p)) return;
     saved_location.clear();
     saved_name.clear();
