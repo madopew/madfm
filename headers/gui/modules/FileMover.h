@@ -15,8 +15,8 @@ private:
     std::string saved_location;
 
     inline static const std::string MSG_LOC_SAVED = "File location saved.";
-    inline static const std::string SUCCESS_MOVE = "File moved successfully.";
-    inline static const std::string SUCCESS_COPY = "File copied successfully.";
+    inline static const std::string SUCCESS_MOVE = "File or directory moved successfully.";
+    inline static const std::string SUCCESS_COPY = "File or directory copied successfully.";
     void moveOrCopyHandle( FiledirectoryException (*)(const std::string&, const std::string&), const std::string&);
 
     void saveLocation(void);
