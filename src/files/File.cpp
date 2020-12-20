@@ -36,4 +36,3 @@ std::string File::getSize() {
 std::string File::getTime() {
     return time;
 }
-

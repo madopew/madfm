@@ -1,7 +1,3 @@
-//
-// Created by Madi on 25.11.2020.
-//
-
 #include "../../../headers/gui/modules/MenuDrawer.h"
 
 MenuDrawer::MenuDrawer(ConsoleGuiHandler *cgh) : cgh(cgh) {

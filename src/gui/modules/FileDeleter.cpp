@@ -1,6 +1,3 @@
-//
-// Created by Madi on 25.11.2020.
-//
 #include <conio.h>
 #include "../../../headers/gui/modules/FileDeleter.h"
 

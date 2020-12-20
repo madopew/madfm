@@ -1,6 +1,3 @@
-//
-// Created by Madi on 25.11.2020.
-//
 #include "../../../headers/gui/modules/FileRenamer.h"
 
 FileRenamer::FileRenamer(ConsoleGuiHandler *cgh) : cgh(cgh) {}

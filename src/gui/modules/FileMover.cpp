@@ -1,7 +1,3 @@
-//
-// Created by Madi on 26.11.2020.
-//
-
 #include "../../../headers/gui/modules/FileMover.h"
 
 FileMover::FileMover(ConsoleGuiHandler *cgh): cgh(cgh), saved_location(""), saved_name("") {
